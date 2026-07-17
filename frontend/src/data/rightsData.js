@@ -1,0 +1,195 @@
+// Icon names map to lucide-react components (resolved in CategoryCard / detail page).
+const rightsData = [
+  {
+    id: 'women',
+    title: 'Women',
+    icon: 'Users',
+    color: 'crimson',
+    description: 'Protections against harassment, domestic violence, and workplace discrimination.',
+    rights: [
+      'Right to free legal aid and protection under the Domestic Violence Act, 2005',
+      'Right to file a complaint at any police station regardless of jurisdiction (Zero FIR)',
+      'Right to a safe workplace under the POSH Act, 2013',
+      'Right to maternity benefits of up to 26 weeks paid leave',
+      'Right to equal pay for equal work under the Equal Remuneration Act',
+    ],
+    acts: [
+      'Protection of Women from Domestic Violence Act, 2005',
+      'Sexual Harassment of Women at Workplace (POSH) Act, 2013',
+      'Maternity Benefit Act, 1961',
+      'Dowry Prohibition Act, 1961',
+    ],
+    emergencyContacts: [
+      { label: 'Women Helpline', number: '181' },
+      { label: 'National Commission for Women', number: '011-26944880' },
+      { label: 'Police Emergency', number: '112' },
+    ],
+    faqs: [
+      { q: 'Can I file a complaint outside my home city?', a: 'Yes, a Zero FIR can be filed at any police station irrespective of jurisdiction, which is later transferred to the appropriate station.' },
+      { q: 'Is workplace harassment complaint confidential?', a: 'Yes, the POSH Act mandates strict confidentiality of the complainant\u2019s identity throughout the inquiry process.' },
+    ],
+  },
+  {
+    id: 'consumer',
+    title: 'Consumer',
+    icon: 'ShoppingCart',
+    color: 'brass',
+    description: 'Rights against defective goods, unfair trade practices, and deficient services.',
+    rights: [
+      'Right to be protected against hazardous goods and services',
+      'Right to be informed of quality, quantity, and price of goods',
+      'Right to seek redressal against unfair trade practices',
+      'Right to consumer education',
+      'Right to a refund, replacement, or compensation for deficient service',
+    ],
+    acts: ['Consumer Protection Act, 2019', 'Sale of Goods Act, 1930'],
+    emergencyContacts: [
+      { label: 'National Consumer Helpline', number: '1915' },
+      { label: 'Consumer Forum Portal', number: 'edaakhil.nic.in' },
+    ],
+    faqs: [
+      { q: 'What is the time limit to file a consumer complaint?', a: 'Complaints must generally be filed within two years from the date the cause of action arose.' },
+      { q: 'Do I need a lawyer for consumer court?', a: 'No, consumer forums are designed to be accessible without mandatory legal representation.' },
+    ],
+  },
+  {
+    id: 'employment',
+    title: 'Employment',
+    icon: 'Briefcase',
+    color: 'emerald',
+    description: 'Protections covering wages, termination, leave, and workplace safety.',
+    rights: [
+      'Right to a written appointment letter and offer terms',
+      'Right to timely payment of wages',
+      'Right to statutory leave (earned, sick, and casual)',
+      'Right to notice period or pay in lieu upon termination',
+      'Right to provident fund and gratuity benefits',
+    ],
+    acts: ['Industrial Disputes Act, 1947', 'Payment of Wages Act, 1936', 'Payment of Gratuity Act, 1972'],
+    emergencyContacts: [
+      { label: 'Labour Helpline', number: '1800-11-4000' },
+      { label: 'EPFO Grievance', number: 'epfigms.gov.in' },
+    ],
+    faqs: [
+      { q: 'Can I be terminated without any reason?', a: 'Termination generally requires due process and notice as per your employment contract and applicable labour law.' },
+      { q: 'Is unpaid overtime legal?', a: 'No, overtime work is entitled to additional wages, typically at twice the ordinary rate under the Factories Act.' },
+    ],
+  },
+  {
+    id: 'tenant',
+    title: 'Tenant',
+    icon: 'Home',
+    color: 'ink',
+    description: 'Rights relating to rent, eviction, deposits, and habitability.',
+    rights: [
+      'Right to a written rental agreement',
+      'Right to receipts for rent and deposit paid',
+      'Right to essential supplies (water, electricity) not being cut off arbitrarily',
+      'Right to advance notice before eviction proceedings',
+      'Right to refund of security deposit within a reasonable period',
+    ],
+    acts: ['Model Tenancy Act, 2021', 'State Rent Control Acts'],
+    emergencyContacts: [
+      { label: 'Rent Authority (State)', number: 'Varies by state' },
+      { label: 'Police Emergency', number: '112' },
+    ],
+    faqs: [
+      { q: 'Can my landlord evict me without notice?', a: 'No, landlords must follow due legal process, typically involving written notice and, if disputed, a court or rent authority order.' },
+      { q: 'How much security deposit can be charged?', a: 'Under the Model Tenancy Act, deposits are generally capped at two months\u2019 rent for residential property.' },
+    ],
+  },
+  {
+    id: 'cyber-crime',
+    title: 'Cyber Crime',
+    icon: 'ShieldAlert',
+    color: 'crimson',
+    description: 'Protections against online fraud, hacking, harassment, and data theft.',
+    rights: [
+      'Right to file a complaint at cybercrime.gov.in or any police station',
+      'Right to have obscene or non-consensual content taken down',
+      'Right to compensation for data breach under IT Rules',
+      'Right to anonymity when reporting sensitive cyber crimes',
+      'Right to be informed of investigation status',
+    ],
+    acts: ['Information Technology Act, 2000', 'IT (Intermediary Guidelines) Rules, 2021'],
+    emergencyContacts: [
+      { label: 'National Cyber Crime Helpline', number: '1930' },
+      { label: 'Cyber Crime Portal', number: 'cybercrime.gov.in' },
+    ],
+    faqs: [
+      { q: 'What should I do if my account is hacked?', a: 'Immediately change credentials, enable two-factor authentication, and file a report at cybercrime.gov.in or call 1930.' },
+      { q: 'Is online harassment a criminal offence?', a: 'Yes, cyberstalking and harassment are punishable under Sections of the IT Act and Bharatiya Nyaya Sanhita.' },
+    ],
+  },
+  {
+    id: 'senior-citizens',
+    title: 'Senior Citizens',
+    icon: 'HeartHandshake',
+    color: 'brass',
+    description: 'Protections around maintenance, healthcare, and elder abuse.',
+    rights: [
+      'Right to claim maintenance from children or relatives',
+      'Right to reclaim property transferred under condition of care',
+      'Right to priority healthcare and boarding in public services',
+      'Right to protection from abuse and abandonment',
+      'Right to free legal aid for maintenance claims',
+    ],
+    acts: ['Maintenance and Welfare of Parents and Senior Citizens Act, 2007'],
+    emergencyContacts: [
+      { label: 'Elder Helpline', number: '14567' },
+      { label: 'Police Emergency', number: '112' },
+    ],
+    faqs: [
+      { q: 'Can senior citizens reclaim gifted property?', a: 'Yes, if the property was transferred on the condition of being cared for and that condition is not fulfilled, the transfer can be declared void by the tribunal.' },
+      { q: 'How quickly are maintenance claims resolved?', a: 'Maintenance Tribunals are required to dispose of applications within 90 days, extendable by 30 days.' },
+    ],
+  },
+  {
+    id: 'students',
+    title: 'Students',
+    icon: 'GraduationCap',
+    color: 'emerald',
+    description: 'Rights against ragging, discrimination, and unfair institutional practices.',
+    rights: [
+      'Right to be free from ragging in educational institutions',
+      'Right to appeal examination results and grading',
+      'Right to access scholarships without discrimination',
+      'Right to grievance redressal committees in colleges',
+      'Right to refund of fees under UGC guidelines for withdrawn admissions',
+    ],
+    acts: ['UGC Regulations on Curbing Ragging, 2009', 'Right to Education Act, 2009'],
+    emergencyContacts: [
+      { label: 'Anti-Ragging Helpline', number: '1800-180-5522' },
+      { label: 'UGC Grievance Portal', number: 'ugc.ac.in' },
+    ],
+    faqs: [
+      { q: 'What counts as ragging?', a: 'Any act, physical or verbal, that causes embarrassment, fear, or psychological harm to a fresher qualifies as ragging under UGC regulations.' },
+      { q: 'Can a college withhold my certificates?', a: 'No, institutions cannot withhold original certificates as a means of coercion; this is prohibited by UGC guidelines.' },
+    ],
+  },
+  {
+    id: 'workers',
+    title: 'Workers',
+    icon: 'HardHat',
+    color: 'ink',
+    description: 'Rights for factory, gig, and unorganised sector workers.',
+    rights: [
+      'Right to a safe working environment under the Factories Act',
+      'Right to minimum wages as fixed by the state',
+      'Right to compensation for workplace injury',
+      'Right to form and join trade unions',
+      'Right to social security benefits for gig and platform workers',
+    ],
+    acts: ['Factories Act, 1948', 'Minimum Wages Act, 1948', 'Code on Social Security, 2020'],
+    emergencyContacts: [
+      { label: 'Labour Helpline', number: '1800-11-4000' },
+      { label: 'ESIC Helpline', number: '1800-11-2526' },
+    ],
+    faqs: [
+      { q: 'Are gig workers covered by labour law?', a: 'The Code on Social Security, 2020 extends select social security benefits to gig and platform workers for the first time.' },
+      { q: 'What if I am injured at work?', a: 'You are entitled to compensation under the Employees\u2019 Compensation Act, covering medical costs and loss of earning capacity.' },
+    ],
+  },
+]
+
+export default rightsData
