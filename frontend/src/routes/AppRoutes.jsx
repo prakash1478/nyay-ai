@@ -16,6 +16,9 @@ import ChatbotPage from '../pages/chatbot/ChatbotPage.jsx'
 import DocumentAnalyzerPage from '../pages/documentAnalyzer/DocumentAnalyzerPage.jsx'
 import KnowYourRightsPage from '../pages/rights/KnowYourRightsPage.jsx'
 import CategoryDetailPage from '../pages/rights/CategoryDetailPage.jsx'
+import VoiceAssistantPage from '../pages/voiceAssistant/VoiceAssistantPage.jsx'
+import LegalAidPage from '../pages/legalAid/LegalAidPage.jsx'
+import WomenAssistantPage from '../pages/womenAssistant/WomenAssistantPage.jsx'
 import NotFoundPage from '../pages/NotFoundPage.jsx'
 
 export default function AppRoutes() {
@@ -45,6 +48,7 @@ export default function AppRoutes() {
           <Route path="/document-analyzer" element={<DocumentAnalyzerPage />} />
           <Route path="/know-your-rights" element={<KnowYourRightsPage />} />
           <Route path="/know-your-rights/:categoryId" element={<CategoryDetailPage />} />
+          <Route path="/legal-aid" element={<LegalAidPage />} />
         </Route>
 
         {/* Chatbot uses a full-height custom layout (no footer / centered container) */}
@@ -56,6 +60,18 @@ export default function AppRoutes() {
           }
         >
           <Route path="/chatbot" element={<ChatbotPage />} />
+          <Route path="/voice-assistant" element={<VoiceAssistantPage />} />
+        </Route>
+
+        {/* Women's Assistant - dedicated module */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/women-assistant" element={<WomenAssistantPage />} />
         </Route>
 
         <Route path="*" element={<MainLayout />}>

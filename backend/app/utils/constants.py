@@ -4,10 +4,27 @@ Application-wide constants and enumerations.
 
 SUPPORTED_LANGUAGES = {
     "en": "English",
-    "ta": "Tamil",
     "hi": "Hindi",
-    "ml": "Malayalam",
+    "bn": "Bengali",
+    "ta": "Tamil",
     "te": "Telugu",
+    "mr": "Marathi",
+    "gu": "Gujarati",
+    "kn": "Kannada",
+    "ml": "Malayalam",
+    "pa": "Punjabi",
+    "or": "Odia",
+    "as": "Assamese",
+    "ur": "Urdu",
+    "sd": "Sindhi",
+    "sa": "Sanskrit",
+    "kok": "Konkani",
+    "ne": "Nepali",
+    "doi": "Dogri",
+    "mni": "Manipuri",
+    "brx": "Bodo",
+    "mai": "Maithili",
+    "sat": "Santali",
 }
 
 RIGHTS_CATEGORIES = [

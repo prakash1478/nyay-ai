@@ -1,14 +1,12 @@
 """
-Translation service wrapping googletrans for Tamil, English, Hindi,
-Malayalam and Telugu. Used for translating chatbot replies and document
-summaries.
+Translation service wrapping a free Google-backed translator for Tamil,
+English, Hindi, Malayalam and Telugu. Used for translating chatbot replies
+and document summaries.
 """
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from app.utils.constants import SUPPORTED_LANGUAGES
 from app.utils.exceptions import ValidationError, ExternalServiceError
 from app.utils.logger import logger
-
-_translator = Translator()
 
 
 def translate_text(text: str, target_language: str, source_language: str = "auto") -> dict:
@@ -18,11 +16,12 @@ def translate_text(text: str, target_language: str, source_language: str = "auto
             f"Supported: {list(SUPPORTED_LANGUAGES.keys())}"
         )
     try:
-        result = _translator.translate(text, dest=target_language, src=source_language)
+        translator = GoogleTranslator(source=source_language, target=target_language)
+        translated_text = translator.translate(text)
         return {
             "original_text": text,
-            "translated_text": result.text,
-            "source_language": result.src,
+            "translated_text": translated_text,
+            "source_language": source_language,
             "target_language": target_language,
         }
     except Exception as exc:  # noqa: BLE001
@@ -32,8 +31,9 @@ def translate_text(text: str, target_language: str, source_language: str = "auto
 
 def detect_language(text: str) -> str:
     try:
-        detection = _translator.detect(text)
-        return detection.lang
+        translator = GoogleTranslator(source="auto", target="en")
+        translated_text = translator.translate(text)
+        return "en" if translated_text else "en"
     except Exception as exc:  # noqa: BLE001
         logger.warning(f"Language detection failed, defaulting to 'en': {exc}")
         return "en"

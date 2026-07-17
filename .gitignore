@@ -1,37 +1,48 @@
-# Python virtual environment
+# --- Python / Backend ---
 venv/
 backend/venv/
-.env
-backend/.env
-
-# Python cache
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 .pytest_cache/
-
-# Logs
-logs/
-*.log
-
-# Uploads and generated files
+*.egg-info/
 backend/app/uploads/
 backend/logs/
 backend/app/database/faiss_indexes/
-
-# Secrets and credentials
 backend/app/config/firebase-service-account.json
-*.pem
-*.key
-*.crt
 
-# OS / editor files
+# --- Node / Frontend ---
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/.env.production
+frontend/.env.*.local
+frontend/*.tsbuildinfo
+
+# --- Environment files ---
+.env
+backend/.env
+*.local
+
+# --- Logs ---
+logs/
+*.log
+
+# --- OS / Editor ---
 .DS_Store
 Thumbs.db
 .vscode/
+.idea/
 
-# Build / packaging
+# --- Secrets ---
+*.pem
+*.key
+*.crt
+*-service-account.json
+
+# --- Build ---
 build/
 dist/
-*.egg-info/

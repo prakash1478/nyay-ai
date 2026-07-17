@@ -10,6 +10,9 @@ export const ROUTES = {
   DOCUMENT_ANALYZER: '/document-analyzer',
   RIGHTS: '/know-your-rights',
   RIGHTS_CATEGORY: '/know-your-rights/:categoryId',
+  VOICE_ASSISTANT: '/voice-assistant',
+  LEGAL_AID: '/legal-aid',
+  WOMEN_ASSISTANT: '/women-assistant',
   NOT_FOUND: '*',
 }
 
@@ -17,6 +20,9 @@ export const NAV_LINKS = [
   { label: 'AI Chatbot', to: ROUTES.CHATBOT },
   { label: 'Document Analyzer', to: ROUTES.DOCUMENT_ANALYZER },
   { label: 'Know Your Rights', to: ROUTES.RIGHTS },
+  { label: 'Voice Assistant', to: ROUTES.VOICE_ASSISTANT },
+  { label: 'Legal Aid', to: ROUTES.LEGAL_AID },
+  { label: 'Women\'s Assistant', to: ROUTES.WOMEN_ASSISTANT },
 ]
 
 export const ACCEPTED_FILE_TYPES = {

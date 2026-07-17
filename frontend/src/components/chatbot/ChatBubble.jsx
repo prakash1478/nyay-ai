@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Copy, Check, Scale } from 'lucide-react'
+import { Copy, Check, Scale, Volume2, VolumeX } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { formatTime } from '../../utils/helpers.js'
+import useTextToSpeech from '../../hooks/useTextToSpeech.js'
 
 export default function ChatBubble({ message }) {
   const [copied, setCopied] = useState(false)
+  const { speak, stop, isPlaying } = useTextToSpeech()
   const isUser = message.role === 'user'
 
   const handleCopy = async () => {
@@ -13,6 +15,14 @@ export default function ChatBubble({ message }) {
     setCopied(true)
     toast.success('Response copied')
     setTimeout(() => setCopied(false), 1500)
+  }
+
+  const handleSpeak = () => {
+    if (isPlaying) {
+      stop()
+    } else {
+      speak(message.content).catch(() => {})
+    }
   }
 
   return (
@@ -42,13 +52,22 @@ export default function ChatBubble({ message }) {
             {formatTime(new Date(message.timestamp))}
           </span>
           {!isUser && (
-            <button
-              onClick={handleCopy}
-              className="opacity-0 group-hover:opacity-100 transition-opacity text-ink-400 hover:text-brass-600 dark:hover:text-brass-400"
-              aria-label="Copy response"
-            >
-              {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-            </button>
+            <>
+              <button
+                onClick={handleSpeak}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-ink-400 hover:text-brass-600 dark:hover:text-brass-400"
+                aria-label={isPlaying ? 'Stop speaking' : 'Read aloud'}
+              >
+                {isPlaying ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+              </button>
+              <button
+                onClick={handleCopy}
+                className="opacity-0 group-hover:opacity-100 transition-opacity text-ink-400 hover:text-brass-600 dark:hover:text-brass-400"
+                aria-label="Copy response"
+              >
+                {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+              </button>
+            </>
           )}
         </div>
       </div>
