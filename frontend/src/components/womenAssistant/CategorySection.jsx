@@ -47,7 +47,7 @@ const SECTIONS = [
   { id: 'rights', label: 'Know Your Rights', icon: ShieldCheck },
   { id: 'laws', label: 'Relevant Laws', icon: BookOpen },
   { id: 'steps', label: 'Step-by-Step Guide', icon: ClipboardList },
-  { id: 'contacts', label: 'Emergency Contacts', icon: Phone },
+  { id: 'emergencyContacts', label: 'Emergency Contacts', icon: Phone },
   { id: 'ngos', label: 'NGO Resources', icon: HeartHandshake },
 ]
 
@@ -169,61 +169,75 @@ export default function CategorySection({ category }) {
                       </ol>
                     )}
 
-                    {section.id === 'contacts' && (
+                    {section.id === 'emergencyContacts' && (
                       <div className="space-y-2.5">
-                        {category.emergencyContacts.map((contact) => (
-                          <a
-                            key={contact.label}
-                            href={`tel:${contact.number.replace(/\D/g, '')}`}
-                            className={classNames(
-                              'flex items-center justify-between gap-3 rounded-lg border px-3.5 py-2.5 hover:brightness-95 transition-all',
-                              accent.border,
-                              accent.light
-                            )}
-                          >
-                            <span className="flex items-center gap-2 text-sm text-ink-700 dark:text-parchment-200">
-                              <Phone className={classNames('w-3.5 h-3.5', accent.text)} />
-                              {contact.label}
-                            </span>
-                            <span className={classNames('text-sm font-mono font-semibold', accent.text)}>
-                              {contact.number}
-                            </span>
-                          </a>
-                        ))}
+                        {category.emergencyContacts.map((contact) => {
+                          const digits = contact.number.replace(/\D/g, '')
+                          const isPhone = digits.length > 0
+                          const linkProps = isPhone
+                            ? { href: `tel:${digits}` }
+                            : { href: `https://${contact.number}`, target: '_blank', rel: 'noopener noreferrer' }
+                          return (
+                            <a
+                              key={contact.label}
+                              {...linkProps}
+                              className={classNames(
+                                'flex items-center justify-between gap-3 rounded-lg border px-3.5 py-2.5 hover:brightness-95 transition-all',
+                                accent.border,
+                                accent.light
+                              )}
+                            >
+                              <span className="flex items-center gap-2 text-sm text-ink-700 dark:text-parchment-200">
+                                <Phone className={classNames('w-3.5 h-3.5', accent.text)} />
+                                {contact.label}
+                              </span>
+                              <span className={classNames('text-sm font-mono font-semibold', accent.text)}>
+                                {contact.number}
+                              </span>
+                            </a>
+                          )
+                        })}
                       </div>
                     )}
 
                     {section.id === 'ngos' && (
                       <div className="space-y-2.5">
-                        {category.ngos.map((ngo, i) => (
-                          <div
-                            key={i}
-                            className={classNames(
-                              'flex items-center justify-between gap-3 rounded-lg border px-3.5 py-3',
-                              accent.border
-                            )}
-                          >
-                            <div className="flex items-start gap-2.5">
-                              <span className={classNames('w-8 h-8 rounded-lg flex items-center justify-center shrink-0', accent.bg)}>
-                                <HeartHandshake className={classNames('w-4 h-4', accent.text)} />
-                              </span>
-                              <div>
-                                <p className="text-sm font-semibold text-ink-800 dark:text-parchment-100">{ngo.name}</p>
-                                <p className="text-xs text-ink-500 dark:text-parchment-400">{ngo.city}</p>
-                              </div>
-                            </div>
-                            <a
-                              href={`tel:${ngo.phone.replace(/\D/g, '')}`}
+                        {category.ngos.map((ngo, i) => {
+                          const ngoDigits = ngo.phone.replace(/\D/g, '')
+                          const ngoIsPhone = ngoDigits.length > 0
+                          const ngoLinkProps = ngoIsPhone
+                            ? { href: `tel:${ngoDigits}` }
+                            : { href: `https://${ngo.phone}`, target: '_blank', rel: 'noopener noreferrer' }
+                          return (
+                            <div
+                              key={i}
                               className={classNames(
-                                'shrink-0 text-xs font-mono font-semibold px-2.5 py-1 rounded-lg',
-                                accent.bg,
-                                accent.text
+                                'flex items-center justify-between gap-3 rounded-lg border px-3.5 py-3',
+                                accent.border
                               )}
                             >
-                              {ngo.phone}
-                            </a>
-                          </div>
-                        ))}
+                              <div className="flex items-start gap-2.5">
+                                <span className={classNames('w-8 h-8 rounded-lg flex items-center justify-center shrink-0', accent.bg)}>
+                                  <HeartHandshake className={classNames('w-4 h-4', accent.text)} />
+                                </span>
+                                <div>
+                                  <p className="text-sm font-semibold text-ink-800 dark:text-parchment-100">{ngo.name}</p>
+                                  <p className="text-xs text-ink-500 dark:text-parchment-400">{ngo.city}</p>
+                                </div>
+                              </div>
+                              <a
+                                {...ngoLinkProps}
+                                className={classNames(
+                                  'shrink-0 text-xs font-mono font-semibold px-2.5 py-1 rounded-lg',
+                                  accent.bg,
+                                  accent.text
+                                )}
+                              >
+                                {ngo.phone}
+                              </a>
+                            </div>
+                          )
+                        })}
                       </div>
                     )}
                   </div>

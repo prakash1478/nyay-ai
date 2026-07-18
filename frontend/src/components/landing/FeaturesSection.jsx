@@ -8,7 +8,7 @@ const MODULES = [
     icon: MessagesSquare,
     title: 'AI Legal Chatbot',
     description: 'Ask any legal question in plain language and get grounded, cited guidance instantly.',
-    points: ['5 Indian languages', 'Voice typing', 'Suggested legal topics'],
+    points: ['Voice typing', 'Suggested legal topics'],
     to: ROUTES.CHATBOT,
     accent: 'brass',
   },

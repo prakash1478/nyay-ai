@@ -18,6 +18,13 @@ async def google_login(request: Request, payload: GoogleLoginRequest):
     return ResponseModel(message="Login successful", data=result)
 
 
+@router.post("/firebase", response_model=ResponseModel[LoginResponse])
+@limiter.limit("10/minute")
+async def firebase_login(request: Request, payload: GoogleLoginRequest):
+    result = auth_service.login_with_firebase(payload.id_token)
+    return ResponseModel(message="Login successful", data=result)
+
+
 @router.post("/refresh", response_model=ResponseModel[TokenResponse])
 @limiter.limit("20/minute")
 async def refresh_token(request: Request, payload: RefreshTokenRequest):

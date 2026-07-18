@@ -18,6 +18,7 @@ import KnowYourRightsPage from '../pages/rights/KnowYourRightsPage.jsx'
 import CategoryDetailPage from '../pages/rights/CategoryDetailPage.jsx'
 import VoiceAssistantPage from '../pages/voiceAssistant/VoiceAssistantPage.jsx'
 import LegalAidPage from '../pages/legalAid/LegalAidPage.jsx'
+import ProfilePage from '../pages/profile/ProfilePage.jsx'
 import WomenAssistantPage from '../pages/womenAssistant/WomenAssistantPage.jsx'
 import NotFoundPage from '../pages/NotFoundPage.jsx'
 
@@ -48,6 +49,7 @@ export default function AppRoutes() {
           <Route path="/document-analyzer" element={<DocumentAnalyzerPage />} />
           <Route path="/know-your-rights" element={<KnowYourRightsPage />} />
           <Route path="/know-your-rights/:categoryId" element={<CategoryDetailPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/legal-aid" element={<LegalAidPage />} />
         </Route>
 

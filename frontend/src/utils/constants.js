@@ -1,4 +1,4 @@
-export const APP_NAME = 'Nyaya AI'
+export const APP_NAME = 'Nyay AI'
 export const APP_TAGLINE = 'Your intelligent legal companion'
 
 export const ROUTES = {
@@ -12,6 +12,7 @@ export const ROUTES = {
   RIGHTS_CATEGORY: '/know-your-rights/:categoryId',
   VOICE_ASSISTANT: '/voice-assistant',
   LEGAL_AID: '/legal-aid',
+  PROFILE: '/profile',
   WOMEN_ASSISTANT: '/women-assistant',
   NOT_FOUND: '*',
 }

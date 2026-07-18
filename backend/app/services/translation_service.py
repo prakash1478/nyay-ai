@@ -28,12 +28,3 @@ def translate_text(text: str, target_language: str, source_language: str = "auto
         logger.error(f"Translation failed: {exc}")
         raise ExternalServiceError("Translation service is currently unavailable") from exc
 
-
-def detect_language(text: str) -> str:
-    try:
-        translator = GoogleTranslator(source="auto", target="en")
-        translated_text = translator.translate(text)
-        return "en" if translated_text else "en"
-    except Exception as exc:  # noqa: BLE001
-        logger.warning(f"Language detection failed, defaulting to 'en': {exc}")
-        return "en"

@@ -40,7 +40,11 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = ""
     ANTHROPIC_API_KEY: str = ""
     GEMINI_API_KEY: str = ""
+    GROQ_API_KEY: str = ""
     LLM_PROVIDER: str = "openai"
+    LLM_TIMEOUT: int = 60
+    GEMINI_MODEL: str = "gemini-2.0-flash"
+    GROQ_MODEL: str = "llama-3.3-70b-versatile"
     EMBEDDING_MODEL: str = "sentence-transformers/all-MiniLM-L6-v2"
     FAISS_INDEX_DIR: str = "app/database/faiss_indexes"
 

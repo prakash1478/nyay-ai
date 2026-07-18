@@ -44,7 +44,7 @@ ALLOWED_AUDIO_EXTENSIONS = {".wav", ".mp3", ".m4a", ".ogg", ".webm", ".flac"}
 
 ALL_ALLOWED_UPLOAD_EXTENSIONS = ALLOWED_DOCUMENT_EXTENSIONS | ALLOWED_IMAGE_EXTENSIONS
 
-RISK_LEVELS = ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+RISK_LEVELS = ["low", "medium", "high", "critical"]
 
 LEGAL_KEYWORDS = [
     "law", "legal", "rights", "court", "contract", "agreement", "lawsuit", "sue",

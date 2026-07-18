@@ -17,7 +17,7 @@ export default function Footer() {
             </span>
           </Link>
           <p className="text-sm text-ink-500 dark:text-parchment-400 max-w-sm leading-relaxed">
-            Nyaya AI helps everyday people understand their legal standing — through conversation,
+            Nyay AI helps everyday people understand their legal standing — through conversation,
             document review, and plain-language rights guides. Not a substitute for a licensed advocate.
           </p>
         </div>

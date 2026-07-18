@@ -4,12 +4,10 @@ import toast from 'react-hot-toast'
 import useSpeechToText from '../../hooks/useSpeechToText.js'
 import { classNames } from '../../utils/helpers.js'
 
-export default function ChatInput({ onSend, isGenerating, onStop, langCode = 'en' }) {
+export default function ChatInput({ onSend, isGenerating, onStop }) {
   const [value, setValue] = useState('')
   const textareaRef = useRef(null)
-  const { isListening, transcript, supported, startListening, stopListening } = useSpeechToText({
-    lang: langCode === 'ta' ? 'ta-IN' : langCode === 'hi' ? 'hi-IN' : langCode === 'te' ? 'te-IN' : langCode === 'ml' ? 'ml-IN' : 'en-IN',
-  })
+  const { isListening, transcript, supported, startListening, stopListening } = useSpeechToText()
 
   useEffect(() => {
     if (transcript) setValue(transcript)
@@ -90,7 +88,7 @@ export default function ChatInput({ onSend, isGenerating, onStop, langCode = 'en
         )}
       </div>
       <p className="text-[11px] text-ink-400 dark:text-parchment-500 mt-2 px-1">
-        Nyaya AI provides general legal information, not a substitute for professional legal advice.
+        <span className="font-display font-semibold text-brass-600 dark:text-brass-400">Nyay AI</span> provides general legal information, not a substitute for professional legal advice.
       </p>
     </form>
   )

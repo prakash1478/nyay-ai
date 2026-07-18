@@ -104,7 +104,7 @@ export default function WomenAssistantPage() {
           </span>
           <div>
             <p className="font-display font-semibold text-sm text-ink-900 dark:text-parchment-100 mb-1">
-              Need more help? Talk to Nyaya AI
+              Need more help? Talk to Nyay AI
             </p>
             <p className="text-xs text-ink-500 dark:text-parchment-400 leading-relaxed">
               Our AI assistant can answer your legal questions in plain language across Hindi, Tamil, Bengali, and other Indian languages. Ask about procedures, file formats, or get personalised guidance.

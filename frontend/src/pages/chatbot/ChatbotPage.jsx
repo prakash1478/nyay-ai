@@ -1,27 +1,61 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { PanelLeft, Trash2 } from 'lucide-react'
+import { PanelLeft, Trash2, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import ChatBubble from '../../components/chatbot/ChatBubble.jsx'
 import TypingIndicator from '../../components/chatbot/TypingIndicator.jsx'
 import ChatInput from '../../components/chatbot/ChatInput.jsx'
 import ChatSidebar from '../../components/chatbot/ChatSidebar.jsx'
 import SuggestedQuestions from '../../components/chatbot/SuggestedQuestions.jsx'
-import LanguageSelector from '../../components/common/LanguageSelector.jsx'
-import useLanguage from '../../hooks/useLanguage.js'
-import { sendChatMessage } from '../../services/api.js'
+import { sendChatMessage, getChatHistory, deleteChatSession } from '../../services/api.js'
 
 function createSession() {
   return { id: crypto.randomUUID(), title: 'New conversation', messages: [] }
 }
 
+function backendToSession(group) {
+  const msgs = (group.messages || []).map((m) => ({
+    id: m.id,
+    role: m.role,
+    content: m.message,
+    timestamp: m.created_at,
+  }))
+  const firstUserMsg = msgs.find((m) => m.role === 'user')
+  return {
+    id: group.session_id,
+    title: firstUserMsg ? firstUserMsg.content.slice(0, 40) : 'New conversation',
+    messages: msgs,
+  }
+}
+
 export default function ChatbotPage() {
-  const [sessions, setSessions] = useState(() => [createSession()])
-  const [activeId, setActiveId] = useState(() => sessions[0].id)
+  const [sessions, setSessions] = useState([])
+  const [activeId, setActiveId] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { language } = useLanguage()
+  const [initialLoading, setInitialLoading] = useState(true)
   const abortRef = useRef(null)
   const scrollRef = useRef(null)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const groups = await getChatHistory()
+        if (cancelled) return
+        const loaded = groups.map(backendToSession)
+        setSessions(loaded.length > 0 ? loaded : [createSession()])
+        setActiveId(loaded.length > 0 ? loaded[0].id : createSession().id)
+      } catch {
+        if (!cancelled) {
+          setSessions([createSession()])
+          setActiveId(createSession().id)
+        }
+      } finally {
+        if (!cancelled) setInitialLoading(false)
+      }
+    })()
+    return () => { cancelled = true }
+  }, [])
 
   const activeSession = sessions.find((s) => s.id === activeId) || sessions[0]
 
@@ -47,11 +81,16 @@ export default function ChatbotPage() {
       abortRef.current = controller
 
       try {
-        const reply = await sendChatMessage(text, { signal: controller.signal })
-        updateSession(activeId, (s) => ({ ...s, messages: [...s.messages, reply] }))
+        const reply = await sendChatMessage(text, { session_id: activeId, signal: controller.signal })
+        updateSession(activeId, (s) => ({
+          ...s,
+          id: reply._session_id || s.id,
+          messages: [...s.messages, reply],
+        }))
       } catch (err) {
         if (err.name !== 'AbortError') {
-          toast.error('Something went wrong. Please try again.')
+          const message = err?.response?.data?.message || err?.message || 'Something went wrong. Please try again.'
+          toast.error(message)
         }
       } finally {
         setIsGenerating(false)
@@ -72,7 +111,8 @@ export default function ChatbotPage() {
     setSidebarOpen(false)
   }
 
-  const handleDeleteChat = (id) => {
+  const handleDeleteChat = async (id) => {
+    const prev = sessions
     setSessions((prev) => {
       const next = prev.filter((s) => s.id !== id)
       if (next.length === 0) {
@@ -83,11 +123,25 @@ export default function ChatbotPage() {
       if (id === activeId) setActiveId(next[0].id)
       return next
     })
+    try {
+      await deleteChatSession(id)
+    } catch {
+      setSessions(prev)
+      toast.error('Failed to delete session')
+    }
   }
 
   const handleClearChat = () => {
     updateSession(activeId, (s) => ({ ...s, messages: [], title: 'New conversation' }))
     toast.success('Conversation cleared')
+  }
+
+  if (initialLoading) {
+    return (
+      <div className="flex h-full items-center justify-center bg-parchment-100 dark:bg-ink-950">
+        <Loader2 className="w-6 h-6 animate-spin text-brass-500" />
+      </div>
+    )
   }
 
   return (
@@ -121,7 +175,6 @@ export default function ChatbotPage() {
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <LanguageSelector compact />
             <button
               onClick={handleClearChat}
               className="w-9 h-9 rounded-lg flex items-center justify-center text-ink-500 dark:text-parchment-300 hover:bg-crimson-500/10 hover:text-crimson-600 transition-colors"
@@ -147,7 +200,7 @@ export default function ChatbotPage() {
 
         <div className="px-4 sm:px-6 pb-5 pt-2">
           <div className="max-w-3xl mx-auto">
-            <ChatInput onSend={handleSend} isGenerating={isGenerating} onStop={handleStop} langCode={language} />
+            <ChatInput onSend={handleSend} isGenerating={isGenerating} onStop={handleStop} />
           </div>
         </div>
       </div>

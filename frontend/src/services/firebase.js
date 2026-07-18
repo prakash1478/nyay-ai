@@ -11,8 +11,8 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth'
 
-// Populate these values in a .env file at the project root, e.g.
-// VITE_FIREBASE_API_KEY=xxxx
+const IS_CONFIGURED = !!import.meta.env.VITE_FIREBASE_API_KEY
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -22,25 +22,48 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
-const app = initializeApp(firebaseConfig)
-export const auth = getAuth(app)
-const googleProvider = new GoogleAuthProvider()
+let app = null
+let auth = null
+let googleProvider = null
 
-export const firebaseSignInWithGoogle = () => signInWithPopup(auth, googleProvider)
-
-export const firebaseSignUpWithEmail = async (name, email, password) => {
-  const cred = await createUserWithEmailAndPassword(auth, email, password)
-  if (name) await updateProfile(cred.user, { displayName: name })
-  return cred
+if (IS_CONFIGURED) {
+  try {
+    app = initializeApp(firebaseConfig)
+    auth = getAuth(app)
+    googleProvider = new GoogleAuthProvider()
+  } catch (e) {
+    console.warn('Firebase initialization failed:', e)
+  }
 }
 
-export const firebaseSignInWithEmail = (email, password) =>
-  signInWithEmailAndPassword(auth, email, password)
+const noopAsync = async () => {}
 
-export const firebaseResetPassword = (email) => sendPasswordResetEmail(auth, email)
+export const firebaseSignInWithGoogle = auth
+  ? () => signInWithPopup(auth, googleProvider)
+  : noopAsync
 
-export const firebaseSignOut = () => signOut(auth)
+export const firebaseSignUpWithEmail = auth
+  ? async (name, email, password) => {
+      const cred = await createUserWithEmailAndPassword(auth, email, password)
+      if (name) await updateProfile(cred.user, { displayName: name })
+      return cred
+    }
+  : noopAsync
 
-export const firebaseOnAuthStateChanged = (callback) => onAuthStateChanged(auth, callback)
+export const firebaseSignInWithEmail = auth
+  ? (email, password) => signInWithEmailAndPassword(auth, email, password)
+  : noopAsync
+
+export const firebaseResetPassword = auth
+  ? (email) => sendPasswordResetEmail(auth, email)
+  : noopAsync
+
+export const firebaseSignOut = auth
+  ? () => signOut(auth)
+  : noopAsync
+
+export const firebaseOnAuthStateChanged = auth
+  ? (callback) => onAuthStateChanged(auth, callback)
+  : (callback) => { callback(null); return noopAsync }
 
 export default app

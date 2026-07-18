@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Quote } from 'lucide-react'
 import Hero from '../components/landing/Hero.jsx'
 import FeaturesSection from '../components/landing/FeaturesSection.jsx'
+import useAuth from '../hooks/useAuth.js'
 import { ROUTES } from '../utils/constants.js'
 
 const TESTIMONIALS = [
@@ -24,6 +25,8 @@ const TESTIMONIALS = [
 ]
 
 export default function LandingPage() {
+  const { isAuthenticated } = useAuth()
+
   return (
     <div>
       <Hero />
@@ -54,8 +57,8 @@ export default function LandingPage() {
         <h2 className="font-display text-3xl sm:text-4xl font-semibold text-ink-900 dark:text-parchment-100 mb-6 max-w-xl mx-auto">
           Your first legal question is on us.
         </h2>
-        <Link to={ROUTES.SIGNUP} className="btn-primary mx-auto">
-          Create your free account <ArrowRight className="w-4 h-4" />
+        <Link to={isAuthenticated ? ROUTES.CHATBOT : ROUTES.SIGNUP} className="btn-primary mx-auto">
+          {isAuthenticated ? 'Go to Dashboard' : 'Create your free account'} <ArrowRight className="w-4 h-4" />
         </Link>
       </section>
     </div>

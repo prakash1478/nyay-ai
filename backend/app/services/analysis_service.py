@@ -50,12 +50,12 @@ def _extract_json(raw: str) -> dict:
 
 def _derive_risk_level(score: int) -> str:
     if score <= 25:
-        return "LOW"
+        return "low"
     if score <= 50:
-        return "MEDIUM"
+        return "medium"
     if score <= 75:
-        return "HIGH"
-    return "CRITICAL"
+        return "high"
+    return "critical"
 
 
 def analyze_document(user_id: str, document_id: str, language: str = "en") -> dict:
@@ -83,18 +83,22 @@ def analyze_document(user_id: str, document_id: str, language: str = "en") -> di
         logger.error(f"Document analysis LLM call/parse failed: {exc}")
         raise ExternalServiceError("Failed to analyze document. Please try again.") from exc
 
-    risk_score = int(parsed.get("risk_score", 50))
+    try:
+        risk_score = int(parsed.get("risk_score") or 50)
+    except (ValueError, TypeError):
+        risk_score = 50
     risk_score = max(0, min(100, risk_score))
-    risk_level = parsed.get("risk_level") if parsed.get("risk_level") in RISK_LEVELS else _derive_risk_level(risk_score)
+    risk_level = (parsed.get("risk_level") or "").lower().strip()
+    risk_level = risk_level if risk_level in RISK_LEVELS else _derive_risk_level(risk_score)
 
     analysis_record = {
         "document_id": document_id,
         "user_id": user_id,
-        "summary": parsed.get("summary", ""),
-        "plain_english_summary": parsed.get("plain_english_summary", ""),
-        "important_clauses": parsed.get("important_clauses", []),
-        "hidden_fees": parsed.get("hidden_fees", []),
-        "illegal_clauses": parsed.get("illegal_clauses", []),
+        "summary": parsed.get("summary") or "",
+        "plain_english_summary": parsed.get("plain_english_summary") or "",
+        "important_clauses": parsed.get("important_clauses") or [],
+        "hidden_fees": parsed.get("hidden_fees") or [],
+        "illegal_clauses": parsed.get("illegal_clauses") or [],
         "risk_score": risk_score,
         "risk_level": risk_level,
     }

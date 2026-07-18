@@ -8,11 +8,22 @@ import {
   firebaseResetPassword,
   firebaseSignOut,
 } from '../services/firebase.js'
+import { api } from '../services/api.js'
 
 export const AuthContext = createContext(null)
 
 const FIREBASE_NOT_CONFIGURED =
   !import.meta.env.VITE_FIREBASE_API_KEY
+
+function mapBackendUser(u) {
+  return {
+    uid: u.uid,
+    displayName: u.name || u.email?.split('@')[0] || 'User',
+    email: u.email,
+    photoURL: u.picture || null,
+    is_onboarded: !!(u.name && u.phone),
+  }
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
@@ -20,14 +31,20 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     if (FIREBASE_NOT_CONFIGURED) {
-      // Allows the UI to be explored without live Firebase credentials.
       const stored = localStorage.getItem('nyaya_demo_user')
       if (stored) setUser(JSON.parse(stored))
       setLoading(false)
       return
     }
+    const jwt = localStorage.getItem('nyaya_jwt')
+    const saved = localStorage.getItem('nyaya_user')
+    if (jwt && saved) {
+      setUser(mapBackendUser(JSON.parse(saved)))
+      setLoading(false)
+      return
+    }
     const unsubscribe = firebaseOnAuthStateChanged((firebaseUser) => {
-      setUser(firebaseUser)
+      setUser(firebaseUser ? { uid: firebaseUser.uid, displayName: firebaseUser.displayName, email: firebaseUser.email, photoURL: firebaseUser.photoURL } : null)
       setLoading(false)
     })
     return () => unsubscribe()
@@ -50,7 +67,13 @@ export function AuthProvider({ children }) {
       return
     }
     const cred = await firebaseSignInWithGoogle()
-    toast.success(`Welcome, ${cred.user.displayName || 'counsel'}`)
+    const idToken = await cred.user.getIdToken()
+    const res = await api.post('/auth/firebase', { id_token: idToken })
+    const { user: backendUser, tokens } = res.data.data
+    localStorage.setItem('nyaya_jwt', tokens.access_token)
+    localStorage.setItem('nyaya_user', JSON.stringify(backendUser))
+    setUser(mapBackendUser(backendUser))
+    toast.success(`Welcome, ${backendUser.name || 'counsel'}`)
     return cred
   }, [])
 
@@ -62,6 +85,12 @@ export function AuthProvider({ children }) {
     }
     const cred = await firebaseSignUpWithEmail(name, email, password)
     toast.success('Account created successfully')
+    const idToken = await cred.user.getIdToken()
+    const res = await api.post('/auth/firebase', { id_token: idToken })
+    const { user: backendUser, tokens } = res.data.data
+    localStorage.setItem('nyaya_jwt', tokens.access_token)
+    localStorage.setItem('nyaya_user', JSON.stringify(backendUser))
+    setUser(mapBackendUser(backendUser))
     return cred
   }, [])
 
@@ -73,6 +102,12 @@ export function AuthProvider({ children }) {
     }
     const cred = await firebaseSignInWithEmail(email, password)
     toast.success('Signed in successfully')
+    const idToken = await cred.user.getIdToken()
+    const res = await api.post('/auth/firebase', { id_token: idToken })
+    const { user: backendUser, tokens } = res.data.data
+    localStorage.setItem('nyaya_jwt', tokens.access_token)
+    localStorage.setItem('nyaya_user', JSON.stringify(backendUser))
+    setUser(mapBackendUser(backendUser))
     return cred
   }, [])
 
@@ -86,6 +121,8 @@ export function AuthProvider({ children }) {
   }, [])
 
   const logout = useCallback(async () => {
+    localStorage.removeItem('nyaya_jwt')
+    localStorage.removeItem('nyaya_user')
     if (FIREBASE_NOT_CONFIGURED) {
       localStorage.removeItem('nyaya_demo_user')
       setUser(null)

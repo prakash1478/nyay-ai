@@ -22,7 +22,7 @@ export default function AuthLayout() {
           <span className="w-10 h-10 rounded-full bg-brass-500/20 border border-brass-400/30 flex items-center justify-center">
             <Scale className="w-5 h-5 text-brass-300" />
           </span>
-          <span className="font-display font-semibold text-xl">{APP_NAME}</span>
+          <span className="font-semibold text-xl">{APP_NAME}</span>
         </Link>
 
         <div className="relative z-10 max-w-md">
@@ -43,7 +43,7 @@ export default function AuthLayout() {
         </div>
 
         <p className="relative z-10 text-xs text-parchment-400">
-          Nyaya AI does not constitute formal legal advice. Consult a licensed advocate for representation.
+          Nyay AI does not constitute formal legal advice. Consult a licensed advocate for representation.
         </p>
       </div>
 
@@ -54,7 +54,7 @@ export default function AuthLayout() {
             <span className="w-8 h-8 rounded-full bg-ink-fade flex items-center justify-center">
               <Scale className="w-4 h-4 text-brass-400" />
             </span>
-            <span className="font-display font-semibold text-ink-900 dark:text-parchment-100">{APP_NAME}</span>
+            <span className="font-semibold text-ink-900 dark:text-parchment-100">{APP_NAME}</span>
           </Link>
           <ThemeToggle />
         </div>

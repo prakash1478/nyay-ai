@@ -7,11 +7,11 @@ export default function useTextToSpeech() {
   const [error, setError] = useState(null)
   const audioRef = useRef(null)
 
-  const speak = useCallback(async (text, language = 'en') => {
+  const speak = useCallback(async (text) => {
     setError(null)
     setIsPlaying(true)
     try {
-      const res = await api.post('/tts', { text, language })
+      const res = await api.post('/tts', { text, language: 'en' })
       const url = res.data.data.audio_file_url
       setAudioUrl(url)
 
@@ -34,14 +34,13 @@ export default function useTextToSpeech() {
     } catch (err) {
       setError('Text-to-speech failed. Using browser speech fallback.')
       const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = language === 'en' ? 'en-IN' : `${language}-IN`
+      utterance.lang = 'en-IN'
       utterance.onend = () => setIsPlaying(false)
       utterance.onerror = () => {
         setIsPlaying(false)
         setError('Speech synthesis unavailable')
       }
       window.speechSynthesis.speak(utterance)
-      setIsPlaying(false)
     }
   }, [])
 

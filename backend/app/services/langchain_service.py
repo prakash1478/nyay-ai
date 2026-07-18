@@ -1,5 +1,6 @@
 import os
 from typing import List, Optional, TYPE_CHECKING, Any
+from openai import OpenAI
 from app.config.settings import settings
 from app.utils.logger import logger
 
@@ -31,34 +32,75 @@ IT Act 2000, Industrial Disputes Act) but make clear you are not a substitute fo
 def _get_embeddings():
     global _embeddings
     if _embeddings is None:
-        from langchain_community.embeddings import HuggingFaceEmbeddings
+        from sentence_transformers import SentenceTransformer
         logger.info("Loading embedding model (first call only)...")
-        _embeddings = HuggingFaceEmbeddings(model_name=settings.EMBEDDING_MODEL)
+        _model = SentenceTransformer(settings.EMBEDDING_MODEL)
+        class _EmbeddingWrapper:
+            def embed_documents(self, texts):
+                return _model.encode(texts, show_progress_bar=False).tolist()
+            def embed_query(self, text):
+                return _model.encode(text, show_progress_bar=False).tolist()
+            def __call__(self, text):
+                return self.embed_query(text)
+        _embeddings = _EmbeddingWrapper()
     return _embeddings
 
 
+def _format_messages(messages: list) -> str:
+    texts = []
+    for m in messages:
+        role = getattr(m, "type", "human").capitalize()
+        texts.append(f"{role}: {m.content}")
+    return "\n".join(texts)
+
+
+class _LLMWrapper:
+    def __init__(self, provider: str, temperature: float):
+        self.provider = provider
+        self.temperature = temperature
+
+    def invoke(self, messages: list):
+        prompt = _format_messages(messages)
+        provider = self.provider
+
+        if provider == "groq":
+            from groq import Groq
+            client = Groq(api_key=settings.GROQ_API_KEY)
+            resp = client.chat.completions.create(
+                model=settings.GROQ_MODEL,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=self.temperature,
+                timeout=settings.LLM_TIMEOUT,
+            )
+            return _LLMResponse(resp.choices[0].message.content)
+
+        if provider == "gemini":
+            from google import genai
+            client = genai.Client(api_key=settings.GEMINI_API_KEY)
+            resp = client.models.generate_content(
+                model=settings.GEMINI_MODEL,
+                contents=prompt,
+                config={"temperature": self.temperature},
+            )
+            return _LLMResponse(resp.text)
+
+        client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=self.temperature,
+            timeout=settings.LLM_TIMEOUT,
+        )
+        return _LLMResponse(resp.choices[0].message.content)
+
+
+class _LLMResponse:
+    def __init__(self, content: str):
+        self.content = content
+
+
 def get_llm(temperature: float = 0.3):
-    provider = settings.LLM_PROVIDER.lower()
-    if provider == "anthropic":
-        from langchain_community.chat_models import ChatAnthropic
-        return ChatAnthropic(
-            model="claude-sonnet-4-6",
-            temperature=temperature,
-            anthropic_api_key=settings.ANTHROPIC_API_KEY,
-        )
-    elif provider == "gemini":
-        from langchain_google_genai import ChatGoogleGenerativeAI
-        return ChatGoogleGenerativeAI(
-            model="gemini-1.5-flash",
-            temperature=temperature,
-            google_api_key=settings.GEMINI_API_KEY,
-        )
-    from langchain_community.chat_models import ChatOpenAI
-    return ChatOpenAI(
-        model="gpt-4o-mini",
-        temperature=temperature,
-        openai_api_key=settings.OPENAI_API_KEY,
-    )
+    return _LLMWrapper(settings.LLM_PROVIDER.lower(), temperature)
 
 
 def build_or_load_vectorstore(documents: Optional[List[Any]] = None):

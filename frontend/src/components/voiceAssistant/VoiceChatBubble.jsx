@@ -20,7 +20,7 @@ export default function VoiceChatBubble({ message, onSpeak }) {
       )}
       <div className={`group max-w-[80%] sm:max-w-[70%] ${isUser ? 'items-end' : 'items-start'} flex flex-col`}>
         <span className="text-[11px] font-medium text-ink-400 dark:text-parchment-500 mb-1 px-1">
-          {isUser ? 'You' : 'Nyaya AI'}
+          {isUser ? 'You' : 'Nyay AI'}
         </span>
         <div
           className={`px-4 py-3 text-sm leading-relaxed ${

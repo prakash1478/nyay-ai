@@ -3,29 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Mic, CircleStop, Volume2, Square, MessageSquare, RotateCcw, Sparkles } from 'lucide-react'
 import useSpeechToText from '../../hooks/useSpeechToText.js'
 import useTextToSpeech from '../../hooks/useTextToSpeech.js'
-import useLanguage from '../../hooks/useLanguage.js'
 import VoiceWaveform from '../../components/voiceAssistant/VoiceWaveform.jsx'
 import VoiceChatBubble from '../../components/voiceAssistant/VoiceChatBubble.jsx'
-
-const LEGAL_RESPONSES = [
-  "Under Indian consumer protection law, you're entitled to file a complaint within two years of the transaction. Would you like the exact filing steps for your state's consumer forum?",
-  'Tenancy notice periods vary by state, but most Rent Control Acts require at least 15-30 days written notice before eviction proceedings can begin. Do you have a written lease?',
-  "Under the IT Act 2000, cyberstalking and online harassment are cognizable offences. You can file a complaint at your nearest cyber cell or via cybercrime.gov.in.",
-  'The Payment of Wages Act requires wages to be paid within 7-10 days of the wage period ending. If your employer has withheld pay beyond this, you may file a claim with the labour commissioner.',
-  'Under the POSH Act, every workplace with 10+ employees must have an Internal Committee to address complaints of sexual harassment. Would you like a checklist for filing a formal complaint?',
-]
-
-async function getAIReply(text) {
-  await new Promise(r => setTimeout(r, 900 + Math.random() * 700))
-  return LEGAL_RESPONSES[Math.floor(Math.random() * LEGAL_RESPONSES.length)]
-}
+import { sendChatMessage } from '../../services/api.js'
 
 export default function VoiceAssistantPage() {
   const [phase, setPhase] = useState('idle')
   const [conversation, setConversation] = useState([])
   const [error, setError] = useState(null)
-  const { language } = useLanguage()
   const transcriptRef = useRef('')
+  const sessionIdRef = useRef(crypto.randomUUID())
 
   const {
     isListening,
@@ -34,7 +21,7 @@ export default function VoiceAssistantPage() {
     startListening,
     stopListening,
     setTranscript,
-  } = useSpeechToText({ lang: language === 'hi' ? 'hi-IN' : 'en-IN' })
+  } = useSpeechToText()
 
   const { speak, stop: stopTts, isPlaying } = useTextToSpeech()
 
@@ -59,21 +46,23 @@ export default function VoiceAssistantPage() {
     setError(null)
 
     try {
-      const reply = await getAIReply(trimmed)
+      const reply = await sendChatMessage(trimmed, { session_id: sessionIdRef.current })
+      sessionIdRef.current = reply._session_id || sessionIdRef.current
       const aiMessage = {
         id: crypto.randomUUID(),
         role: 'ai',
-        content: reply,
+        content: reply.content,
         timestamp: new Date().toISOString(),
       }
       setConversation(prev => [...prev, aiMessage])
       setPhase('result')
-      speak(reply, language === 'hi' ? 'hi' : 'en')
+      speak(reply.content).catch(() => {})
     } catch (err) {
-      setError('Failed to get a response. Please try again.')
+      const msg = err?.response?.data?.message || err?.message || 'Could not reach the AI. Please try again.'
+      setError(msg)
       setPhase('idle')
     }
-  }, [speak, language])
+  }, [speak])
 
   useEffect(() => {
     if (!isListening && phase === 'listening') {
@@ -105,10 +94,11 @@ export default function VoiceAssistantPage() {
     setPhase('idle')
     setTranscript('')
     setError(null)
+    sessionIdRef.current = crypto.randomUUID()
   }
 
   const handleReSpeak = (text) => {
-    speak(text, language === 'hi' ? 'hi' : 'en')
+    speak(text)
   }
 
   const showTranscript = phase === 'listening' && transcript
@@ -188,7 +178,7 @@ export default function VoiceAssistantPage() {
                 </span>
                 <div className="max-w-[80%] sm:max-w-[70%] flex flex-col">
                   <span className="text-[11px] font-medium text-ink-400 dark:text-parchment-500 mb-1 px-1">
-                    Nyaya AI
+                    Nyay AI
                   </span>
                   <div className="px-4 py-3 bg-white dark:bg-ink-800 border border-ink-900/5 dark:border-parchment-100/10 rounded-2xl rounded-tl-sm shadow-sm">
                     <div className="flex items-center gap-2.5">
@@ -256,7 +246,7 @@ export default function VoiceAssistantPage() {
           <div className="max-w-3xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-3">
               <VoiceWaveform active={true} color="bg-brass-500" />
-              <span className="text-xs text-ink-500 dark:text-parchment-400">Nyaya AI is speaking...</span>
+              <span className="text-xs text-ink-500 dark:text-parchment-400">Nyay AI is speaking...</span>
             </div>
             <button
               onClick={handleStopTts}

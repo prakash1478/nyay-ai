@@ -1,7 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 
-// Wraps the browser SpeechRecognition API (where available) for voice-typing input.
-export default function useSpeechToText({ lang = 'en-US' } = {}) {
+export default function useSpeechToText() {
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState('')
   const [supported, setSupported] = useState(true)
@@ -16,7 +15,7 @@ export default function useSpeechToText({ lang = 'en-US' } = {}) {
     const recognition = new SpeechRecognition()
     recognition.continuous = false
     recognition.interimResults = true
-    recognition.lang = lang
+    recognition.lang = 'en-US'
 
     recognition.onresult = (event) => {
       let text = ''
@@ -30,7 +29,7 @@ export default function useSpeechToText({ lang = 'en-US' } = {}) {
 
     recognitionRef.current = recognition
     return () => recognition.stop()
-  }, [lang])
+  }, [])
 
   const startListening = useCallback(() => {
     if (!recognitionRef.current) return

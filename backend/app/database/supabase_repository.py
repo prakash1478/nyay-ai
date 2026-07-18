@@ -80,16 +80,20 @@ class SupabaseRepository:
         try:
             payload = {**data}
             payload.setdefault("created_at", datetime.datetime.utcnow().isoformat())
-            payload.setdefault("updated_at", datetime.datetime.utcnow().isoformat())
             if doc_id:
                 payload["id"] = doc_id
-            response = requests.post(self._table_url(), headers=self.headers, json=payload, timeout=20)
+            headers = {**self.headers, "Prefer": "return=representation"}
+            response = requests.post(self._table_url(), headers=headers, json=payload, timeout=20)
             response.raise_for_status()
-            result = self._extract_first_result(response.json()) or {}
+            try:
+                result = self._extract_first_result(response.json()) or {}
+            except ValueError:
+                result = {}
             result["id"] = result.get("id", payload.get("id", doc_id))
             return result
         except requests.HTTPError as exc:
-            logger.error(f"Supabase create failed in '{self.collection_name}': {exc}")
+            body = exc.response.text if exc.response is not None else "no response"
+            logger.error(f"Supabase create failed in '{self.collection_name}': {exc} | body={body}")
             raise DatabaseError(f"Failed to create document in {self.collection_name}") from exc
         except Exception as exc:  # noqa: BLE001
             logger.error(f"Supabase create failed in '{self.collection_name}': {exc}")

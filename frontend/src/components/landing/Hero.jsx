@@ -2,9 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Scale, Sparkles } from 'lucide-react'
+import useAuth from '../../hooks/useAuth.js'
 import { ROUTES } from '../../utils/constants.js'
 
 export default function Hero() {
+  const { isAuthenticated } = useAuth()
   return (
     <section className="relative overflow-hidden">
       <div className="absolute inset-0 bg-brief-lines opacity-[0.035] pointer-events-none" />
@@ -27,11 +29,11 @@ export default function Hero() {
               <span className="italic text-brass-600 dark:text-brass-400">before you sign anything.</span>
             </h1>
             <p className="text-base sm:text-lg text-ink-500 dark:text-parchment-300 max-w-lg mb-9 leading-relaxed">
-              Nyaya AI reads your documents, answers your legal questions in five Indian languages, and
+              <span className="font-display font-semibold text-brass-600 dark:text-brass-400">Nyay AI</span> reads your documents, answers your legal questions in plain English, and
               breaks down your rights — so you walk into every situation informed.
             </p>
             <div className="flex flex-wrap items-center gap-4">
-              <Link to={ROUTES.SIGNUP} className="btn-primary">
+              <Link to={isAuthenticated ? ROUTES.CHATBOT : ROUTES.SIGNUP} className="btn-primary">
                 Get started free <ArrowRight className="w-4 h-4" />
               </Link>
               <Link to={ROUTES.CHATBOT} className="btn-secondary">
@@ -39,8 +41,6 @@ export default function Hero() {
               </Link>
             </div>
             <div className="flex items-center gap-6 mt-10 text-xs text-ink-400 dark:text-parchment-400">
-              <span>5 languages supported</span>
-              <span className="w-1 h-1 rounded-full bg-ink-300 dark:bg-parchment-600" />
               <span>8 rights categories</span>
               <span className="w-1 h-1 rounded-full bg-ink-300 dark:bg-parchment-600" />
               <span>Free to start</span>
@@ -55,11 +55,11 @@ export default function Hero() {
           >
             <div className="relative bg-white dark:bg-ink-800 rounded-2xl shadow-soft border border-ink-900/5 dark:border-parchment-100/10 p-6 rotate-2">
               <div className="flex items-center gap-2 mb-5">
-                <span className="w-8 h-8 rounded-full bg-ink-fade flex items-center justify-center">
-                  <Scale className="w-4 h-4 text-brass-400" />
+                <span className="w-8 h-8 rounded-full bg-gold-fade flex items-center justify-center shadow-gold">
+                  <Scale className="w-4 h-4 text-parchment-100" />
                 </span>
                 <div>
-                  <p className="text-sm font-semibold text-ink-900 dark:text-parchment-100">Nyaya AI</p>
+                  <p className="text-sm font-display font-semibold text-brass-600 dark:text-brass-400">Nyay AI</p>
                   <p className="text-[11px] text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Online
                   </p>

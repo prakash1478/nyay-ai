@@ -28,9 +28,11 @@ const STATUS_COLORS = {
   false: 'text-crimson-600 dark:text-crimson-400 bg-crimson-500/10',
 }
 
-function generateDistance() {
-  const distances = ['0.3 km', '0.8 km', '1.2 km', '1.8 km', '2.5 km', '3.1 km', '4.0 km', '5.2 km', '6.7 km', '8.5 km']
-  return distances[Math.floor(Math.random() * distances.length)]
+function formatDistance(center) {
+  if (center.distance != null) {
+    return `${center.distance} km`
+  }
+  return 'Check location'
 }
 
 export default function CenterCard({ center, index, isSelected, onSelect }) {
@@ -38,7 +40,7 @@ export default function CenterCard({ center, index, isSelected, onSelect }) {
   const Icon = meta.icon
   const badgeColor = BADGE_COLORS[meta.color]
   const iconWrapper = ICON_WRAPPER[meta.color]
-  const distance = generateDistance()
+  const distance = formatDistance(center)
 
   return (
     <motion.div

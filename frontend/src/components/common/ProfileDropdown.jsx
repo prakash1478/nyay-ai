@@ -45,7 +45,10 @@ export default function ProfileDropdown() {
             </p>
             <p className="text-xs text-ink-400 dark:text-parchment-400 truncate">{user.email}</p>
           </div>
-          <button className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink-700 dark:text-parchment-200 hover:bg-parchment-200 dark:hover:bg-ink-700 transition-colors">
+          <button
+            onClick={() => { setOpen(false); navigate(ROUTES.PROFILE) }}
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink-700 dark:text-parchment-200 hover:bg-parchment-200 dark:hover:bg-ink-700 transition-colors"
+          >
             <User className="w-4 h-4" /> My Profile
           </button>
           <button
