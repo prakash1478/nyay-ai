@@ -59,7 +59,7 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "app/uploads"
 
     # CORS
-    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:5173"
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:5173,https://nyay-ai-theta.vercel.app"
 
     # Logging
     LOG_LEVEL: str = "INFO"
